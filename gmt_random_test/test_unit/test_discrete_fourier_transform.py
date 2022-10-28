@@ -59,7 +59,7 @@ class DiscreteFourierTransformTest(Test):
         # Count the peaks above the upper threshold (N1)
         counted_peaks: float = float(len(magnitudes[magnitudes < threshold]))
         # Compute the score (P-value) using the normalized difference
-        normalized_difference: float = (counted_peaks - expected_peaks) / math.sqrt((bits_copy.size * 0.95 * 0.05) / 4)
+        normalized_difference: float = (counted_peaks - expected_peaks) / math.sqrt((bits_copy.size / 3.8 )* 0.95 * 0.05 )
         score: float = math.erfc(abs(normalized_difference) / math.sqrt(2))
         q_value: float = math.erfc(normalized_difference / math.sqrt(2)) / 2.0
         # Return result
