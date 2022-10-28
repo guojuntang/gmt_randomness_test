@@ -55,7 +55,7 @@ class RunsTest(Test):
         return Result(self.name, False, numpy.array([score]), numpy.array([q_value]))
 
     def __repr__(self) -> str:
-        return f'{self.name})'
+        return f'{self.name}'
 
     def is_eligible(self,
                     bits: numpy.ndarray) -> bool:

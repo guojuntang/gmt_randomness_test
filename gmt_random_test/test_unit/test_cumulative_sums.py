@@ -72,7 +72,7 @@ class CumulativeSumsTest(Test):
         return True
 
     def __repr__(self) -> str:
-        return f'{self.name})'
+        return f'{self.name}'
 
     @staticmethod
     def _compute_p_value(sequence_size: int, max_excursion: int) -> float:

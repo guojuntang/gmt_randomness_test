@@ -11,4 +11,5 @@ if __name__ == "__main__":
     # gmt_test.run_all_battery_with_bits(bits)
     # gmt_test.run_by_name_with_bits(bits, "serial_3")
     # gmt_test.run_by_name_with_bits(bits, "serial_5")
-    gmt_test.run_all_battery_with_file("data/data_20000")
+    # gmt_test.run_all_battery_with_file("data/data_20000")
+    gmt_test.run_battery_by_names_with_file("data/data_20000", ["serial_3", "serial_5", "longest_runs_in_a_block", "cumulative_sums"])

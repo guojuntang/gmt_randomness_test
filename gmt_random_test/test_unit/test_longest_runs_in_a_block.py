@@ -31,6 +31,7 @@ class LongestRunsInABlockTest(Test):
     """
 
     def __init__(self):
+        # TODO fix bits length here
         # Define specific test attributes
         self._sequence_size_min: int = 128
         # Define cache attributes
@@ -81,13 +82,11 @@ class LongestRunsInABlockTest(Test):
                 block_size: int = 128
             # Set the block number and K depending on the block size
             k: int = 6
-            blocks_number: int = 75
             if block_size == 8:
                 k: int = 3
-                blocks_number: int = 16
             elif block_size == 128:
                 k: int = 5
-                blocks_number: int = 49
+            blocks_number = bits.size // block_size
             # Save in the cache
             self._last_bits_size = bits.size
             self._block_size = block_size

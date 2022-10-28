@@ -49,22 +49,47 @@ class GmtRandomnessTest():
         f.close()
         return sequences
 
-    
-    def run_all_battery_with_file(self, file_name: str):
-        result: Result = None
-        time: int = 0
+    def run_battery_by_names_with_file(self, file_name: str, test_names):
         file_size: int = os.path.getsize(file_name)
         samples_size: int = file_size // (self._bits_length // 8)
         sequences = self._read_sequences_from_file(file_name, samples_size)
+        battery: dict = {k: v for k, v in self._battery.items() if k in test_names}
+        self._run_battery(sequences, battery)
+
+    def _run_battery(self, sequences, battery: dict):
+        result: Result = None
+        time: int = 0
+        samples_size: int = len(sequences)
+        # TODO print format
         print(f'GMT randomness test (samples size: {samples_size})')
-        print("Types of test: \tPasses: \tDistribution:")
-        for test_unit in self._battery.values():
+        print("Types of test: \t\t\tPasses: \tDistribution:")
+        for test_unit in battery.values():
+            # todo two q value lists
             q_value_list = []
+            q_value_list1 = []
             passes: int = 0
             for seq in sequences:
                 bits: numpy.ndarray = numpy.unpackbits(seq)
                 result, time = self._run_single_test(bits, test_unit)
                 passes += 1 if result.passed else 0
-                q_value_list.append(result.q_value)
-            q_value_score: float = QValueCollector.compute_value(numpy.concatenate(q_value_list), self._intervals_num, samples_size)
-            print(f'{test_unit} \t{passes} \t{q_value_score}')
+                if result.q_value.size == 2:
+                    q_value_list.append(result.q_value[0])
+                    q_value_list1.append(result.q_value[1])
+                else:
+                    q_value_list.append(result.q_value[0])
+
+            if q_value_list1 != []:
+                q_value_score1: float = QValueCollector.compute_value(numpy.array(q_value_list1), self._intervals_num, samples_size)
+                q_value_score: float = QValueCollector.compute_value(numpy.array(q_value_list), self._intervals_num, samples_size)
+                print(f'{test_unit} \t\t\t{passes} \t{q_value_score}, {q_value_score1}')
+            else:
+                q_value_score: float = QValueCollector.compute_value(numpy.array(q_value_list), self._intervals_num, samples_size)
+                print(f'{test_unit} \t\t\t{passes} \t{q_value_score}')
+
+
+    
+    def run_all_battery_with_file(self, file_name: str):
+        file_size: int = os.path.getsize(file_name)
+        samples_size: int = file_size // (self._bits_length // 8)
+        sequences = self._read_sequences_from_file(file_name, samples_size)
+        self._run_battery(sequences, self._battery)

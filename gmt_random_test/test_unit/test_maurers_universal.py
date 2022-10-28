@@ -130,4 +130,4 @@ class MaurersUniversalTest(Test):
         return result
 
     def __repr__(self) -> str:
-        return f'{self.name})'
+        return f'{self.name}'
