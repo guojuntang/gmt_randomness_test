@@ -21,7 +21,8 @@ from gmt_random_test import Test, Result
 
 class CumulativeSumsTest(Test):
     """
-    Cumulative sums test as described in NIST paper: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-22r1a.pdf
+    Cumulative sums test is one of the tests in GM/T.
+    You can also refer to NIST paper: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-22r1a.pdf
     The focus of this test is the maximal excursion (from zero) of the random walk defined by the cumulative sum of adjusted (-1, +1) digits in the sequence.
     The purpose of the test is to determine whether the cumulative sum of the partial sequences occurring in the tested sequence is too large or too small
     relative to the expected behavior of that cumulative sum for random sequences.

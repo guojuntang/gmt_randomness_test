@@ -1,3 +1,16 @@
+#
+# Copyright (C) Guojun Tang 2022
+#
+# Inspired by the work of David Johnston (C) 2017: https://github.com/dj-on-github/sp800_22_tests
+#   and Luca Pasqualini (C) 2019: https://github.com/InsaneMonster/NistRng
+#
+# This work is licensed under a BSD 3-Clause.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
+
+# Import packages
+
 import numpy
 import scipy.special
 
@@ -7,6 +20,12 @@ from gmt_random_test import Test, Result
 
 
 class PokerTest(Test):
+    """
+    Poker test is one of the tests in GM/T. However, this test is not included in NIST.
+    The focus of Poker test is to check whether the number of 2^m subsequences with length m is close. 
+    In a random binary sequence, the number of sequences should be close to each other.
+    The significance value of the test is 0.01.
+    """
 
     def __init__(self, block_size:int  = 4):
         # Define specific test attributes

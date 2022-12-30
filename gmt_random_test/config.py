@@ -11,6 +11,10 @@ from gmt_random_test.test_unit.test_runs import RunsTest
 from gmt_random_test.test_unit.test_runs_distribution import RunsDistributionTest
 from gmt_random_test.test_unit.test_serial import SerialTest
 
+'''
+        GM/T parameters for 20000bits binary sequences.
+        This bits' size doesn't support Binary Matrix Rank Test, Universal Statistic Test, and Linear Complexity Test. 
+'''
 GMT_20000: dict = {
         "monobit": MonobitTest(),
         "frequency_within_block": FrequencyWithinBlockTest(1000),

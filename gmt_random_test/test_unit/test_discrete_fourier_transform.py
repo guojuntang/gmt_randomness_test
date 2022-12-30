@@ -1,10 +1,10 @@
 #
-# Copyright (C) 2019 Luca Pasqualini
-# University of Siena - Artificial Intelligence Laboratory - SAILab
+# Copyright (C) Guojun Tang 2022
 #
 # Inspired by the work of David Johnston (C) 2017: https://github.com/dj-on-github/sp800_22_tests
+#   and Luca Pasqualini (C) 2019: https://github.com/InsaneMonster/NistRng
 #
-# NistRng is licensed under a BSD 3-Clause.
+# This work is licensed under a BSD 3-Clause.
 #
 # You should have received a copy of the license along with this
 # work. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
@@ -23,11 +23,13 @@ from gmt_random_test import Test, Result
 
 class DiscreteFourierTransformTest(Test):
     """
-    Discrete Fourier transform (spectral) test as described in NIST paper: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-22r1a.pdf
+    Discrete Fourier transform (spectral) test is one of the tests in GM/T.
+    You can also refer to NIST paper: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-22r1a.pdf
     The focus of this test is the peak heights in the Discrete Fourier Transform of the sequence.
     The purpose of this test is to detect periodic features (i.e., repetitive patterns that are near each other) in the
     tested sequence that would indicate a deviation from the assumption of randomness.
     The intention is to detect whether the number of peaks exceeding the 95% threshold is significantly different than 5%.
+    However, it uses different constant in the calculation (see the variable normalized_difference).
     The significance value of the test is 0.01.
     """
 
@@ -58,7 +60,7 @@ class DiscreteFourierTransformTest(Test):
         expected_peaks: float = 0.95 * bits_copy.size / 2.0
         # Count the peaks above the upper threshold (N1)
         counted_peaks: float = float(len(magnitudes[magnitudes < threshold]))
-        # Compute the score (P-value) using the normalized difference
+        # Compute the score (P-value) using the normalized difference (using different parameters from NIST)
         normalized_difference: float = (counted_peaks - expected_peaks) / math.sqrt((bits_copy.size / 3.8 )* 0.95 * 0.05 )
         score: float = math.erfc(abs(normalized_difference) / math.sqrt(2))
         q_value: float = math.erfc(normalized_difference / math.sqrt(2)) / 2.0

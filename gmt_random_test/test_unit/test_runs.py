@@ -1,10 +1,10 @@
 #
-# Copyright (C) 2019 Luca Pasqualini
-# University of Siena - Artificial Intelligence Laboratory - SAILab
+# Copyright (C) Guojun Tang 2022
 #
 # Inspired by the work of David Johnston (C) 2017: https://github.com/dj-on-github/sp800_22_tests
+#   and Luca Pasqualini (C) 2019: https://github.com/InsaneMonster/NistRng
 #
-# NistRng is licensed under a BSD 3-Clause.
+# This work is licensed under a BSD 3-Clause.
 #
 # You should have received a copy of the license along with this
 # work. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
@@ -21,7 +21,8 @@ from gmt_random_test import Test, Result
 
 class RunsTest(Test):
     """
-    Runs test as described in NIST paper: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-22r1a.pdf
+    Runs test is one of the tests in GM/T.
+    You can also refer to NIST paper: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-22r1a.pdf
     The focus of this test is the total number of runs in the sequence, where a run is an uninterrupted sequence of identical bits.
     A run of length k consists of exactly k identical bits and is bounded before and after with a bit of the opposite value.
     The purpose of the runs test is to determine whether the number of runs of ones and zeros of various lengths is as expected

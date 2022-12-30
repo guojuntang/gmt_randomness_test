@@ -1,3 +1,16 @@
+#
+# Copyright (C) Guojun Tang 2022
+#
+# Inspired by the work of David Johnston (C) 2017: https://github.com/dj-on-github/sp800_22_tests
+#   and Luca Pasqualini (C) 2019: https://github.com/InsaneMonster/NistRng
+#
+# This work is licensed under a BSD 3-Clause.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
+
+# Import packages
+
 import numpy
 import scipy
 import math
@@ -8,6 +21,13 @@ from gmt_random_test import Test, Result
 
 
 class RunsDistributionTest(Test):
+    """
+    Runs distribution test is one of the tests in GM/T. However, this test is not included in NIST.
+    The focus of this test is to check the uniformity of runs' distribution. In a random binary sequence, 
+    the number of runs of the same length should be approximately the same.
+    The significance value of the test is 0.01.
+    """
+
     # require bits length to pre-compute the table
     def __init__(self, bits_length: int = 100):
         self._bits_length = bits_length

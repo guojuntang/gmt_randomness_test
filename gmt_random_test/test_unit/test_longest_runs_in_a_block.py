@@ -1,10 +1,10 @@
 #
-# Copyright (C) 2019 Luca Pasqualini
-# University of Siena - Artificial Intelligence Laboratory - SAILab
+# Copyright (C) Guojun Tang 2022
 #
 # Inspired by the work of David Johnston (C) 2017: https://github.com/dj-on-github/sp800_22_tests
+#   and Luca Pasqualini (C) 2019: https://github.com/InsaneMonster/NistRng
 #
-# NistRng is licensed under a BSD 3-Clause.
+# This work is licensed under a BSD 3-Clause.
 #
 # You should have received a copy of the license along with this
 # work. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
@@ -21,12 +21,12 @@ from gmt_random_test import Test, Result
 
 class LongestRunsInABlockTest(Test):
     """
-    Longest run ones in a block test as described in NIST paper: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-22r1a.pdf
-    The focus of the test is the longest run of ones within M-bit blocks. The purpose of this test is to determine whether
-    the length of the longest run of ones within the tested sequence is consistent with the length of the longest run of
-    ones that would be expected in a random sequence. Note that an irregularity in the expected length of the longest run
-    of ones implies that there is also an irregularity in the expected length of the longest run of zeroes.
-    Therefore, only a test for ones is necessary.
+    Longest run ones in a block test is one of the tests in GM/T.
+    You can also refer to NIST paper: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-22r1a.pdf
+    In GM/T 005-2021, this test will also check runs of ones and zeros. And it also uses different probabilities from NIST (see _probabilities). 
+    The focus of the test is the longest run of ones(zeroes) within M-bit blocks. The purpose of this test is to determine whether
+    the length of the longest run of ones (zeroes) within the tested sequence is consistent with the length of the longest run of
+    ones (zeroes) that would be expected in a random sequence. 
     The significance value of the test is 0.01.
     """
 
@@ -148,7 +148,7 @@ class LongestRunsInABlockTest(Test):
     @staticmethod
     def _probabilities(size_of_block: int, index: int) -> float:
         """
-        Returns a probability at the given index in the array or probabilities defined for the block of the given size.
+        Returns a probability at the given index in the array or probabilities defined for the block of the given size. (using different parameters from NIST)
         :param size_of_block: can be 8, 128, 512, 1000 and in any other case will fallback on 10000
         :param index: the index of the probability
         :return: the probability at the given index

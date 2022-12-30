@@ -12,7 +12,8 @@ class Result:
     Attributes:
         - name: the name of the test giving the result
         - passed: whether or not the test in hand was passed.
-        - score: the average of the scores (p values) resulting from the test in hand.
+        - score: the score (p value) resulting from the test in hand (in some test, there will be more than one p values).
+        - q_value: the q value result (in some test, there will be more than one q values).
     """
 
     def __init__(self,
@@ -47,7 +48,7 @@ class Result:
 
 class Test:
     """
-    Base test class to represent all test as described in the NIST paper: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-22r1a.pdf
+    Base test class to represent all test as described in the GM/T 005-2021.
     When run, the test returns one or multiple scores and a result flag wrapped in a Result object.
     Each score is a P-value, which is the probability that a true random number generator would produce a worse result in the test
     than the one computed on the sequence of bits given as parameter. If each P-value is greater than the significance value for the
