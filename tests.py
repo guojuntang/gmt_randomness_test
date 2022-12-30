@@ -5,10 +5,13 @@ from gmt_random_test.test import Result
 from gmt_random_test.test_unit.test_approximate_entropy import ApproximateEntropyTest
 from gmt_random_test.test_unit.test_autocorrelation import AutocorrelationTest
 from gmt_random_test.test_unit.test_binary_derivative import BinaryDerivativeTest
+from gmt_random_test.test_unit.test_binary_matrix_rank import BinaryMatrixRankTest
 from gmt_random_test.test_unit.test_cumulative_sums import CumulativeSumsTest
 from gmt_random_test.test_unit.test_discrete_fourier_transform import DiscreteFourierTransformTest
 from gmt_random_test.test_unit.test_frequency_within_block import FrequencyWithinBlockTest
+from gmt_random_test.test_unit.test_linear_complexity import LinearComplexityTest
 from gmt_random_test.test_unit.test_longest_runs_in_a_block import LongestRunsInABlockTest
+from gmt_random_test.test_unit.test_maurers_universal import MaurersUniversalTest
 from gmt_random_test.test_unit.test_monobit import MonobitTest
 from gmt_random_test.test_unit.test_poker import PokerTest
 from gmt_random_test.test_unit.test_runs import RunsTest
@@ -119,7 +122,35 @@ if __name__ == "__main__":
         result, time = fourier_test.run(pack_01str(fourier_seq))
         print(result)
 
+        #e: str = ""
+        #with open("data/data.e", "rt") as f:
+        #        e = f.read()
+        #        f.close()
+        
+        #'''
+        #Maurer's universal test
+        #'''
+        ##universal_test: MaurersUniversalTest = MaurersUniversalTest()
+        ##result, time = universal_test.run(pack_01str(e))
+        #universal_test: MaurersUniversalTest = MaurersUniversalTest(2, 4)
+        #result, time = universal_test.run(pack_01str("01011010011101010111"))
+        #print(result)
+
+        #'''
+        #Linear Complexity test
+        #'''
+        ##complexity_test: LinearComplexityTest = LinearComplexityTest()
+        ##result, time = complexity_test.run(pack_01str(e))
+        ##print(result)
+
+        #'''
+        #Binary matrix rank test
+        #'''
+        #matrix_test: BinaryMatrixRankTest = BinaryMatrixRankTest()
+        #result, time = matrix_test.run(pack_01str(e))
+        #print(result)
+
         '''
         q values test
         '''
-        print(QValueCollector.compute_value(numpy.array(q_values_list), 10, 50))
+        print(QValueCollector.compute_value(numpy.array(q_values_list), 10))
