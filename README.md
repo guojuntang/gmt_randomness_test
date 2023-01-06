@@ -98,4 +98,27 @@ Please check the [test file](tests.py).
 
 ### 3. Results
 
-TODOTODO
+[20000-bits](data/data_20000)
+
+```
+GMT randomness test (samples size: 1000)
+Types of test:  Passes:         Distribution:
+Monobit         992     0.19376653751100414
+Frequency Within Block (m=1000)         993     0.6287904561747886
+Poker (m=4)     992     0.9774801795691433
+Poker (m=8)     983     0.010988016145239969
+Runs)   989     0.5810821521175091
+RunsDistribution)       989     0.6204652616810549
+Binary Derivative (d=3)         994     0.8628831961771974
+Binary Derivative (d=7)         989     0.35864134122843766
+Autocorrelation (k=2)   987     0.5523828823144027
+Autocorrelation (k=8)   990     0.5081718433121454
+Autocorrelation (k=16)  991     0.004085375625386839
+Approximate Entropy (m=2)       990     0.7791877161648364
+Approximate Entropy (m=5)       996     0.5261047121948592
+Discrete Fourier Transform                      991     0.12961959133276194
+Serial (m=3)                    985     0.8891175958894987, 0.33768835649023937
+Serial (m=5)                    984     0.03756608354257083, 0.6371194071693984
+Longest Runs In A Block                         983     0.18555523463043544, 0.9929519746920032
+Cumulative Sums                         991     0.8237245548918524, 0.4559371952206618
+```
