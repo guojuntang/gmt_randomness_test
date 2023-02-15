@@ -1,10 +1,11 @@
 #
-# Copyright (C) 2019 Luca Pasqualini
-# University of Siena - Artificial Intelligence Laboratory - SAILab
+# Copyright (C) Guojun Tang 2022
 #
 # Inspired by the work of David Johnston (C) 2017: https://github.com/dj-on-github/sp800_22_tests
+#   and Luca Pasqualini (C) 2019: https://github.com/InsaneMonster/NistRng
+#   and Steven Ang (C) 2017: https://github.com/stevenang/randomness_testsuite/blob/master/Complexity.py
 #
-# NistRng is licensed under a BSD 3-Clause.
+# This work is licensed under a BSD 3-Clause.
 #
 # You should have received a copy of the license along with this
 # work. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
@@ -28,7 +29,7 @@ class LinearComplexityTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self, pattern_length = 512):
+    def __init__(self, pattern_length = 1000):
         # Define specific test attributes
         self._sequence_size_min: int = 1000000
         self._pattern_length: int = pattern_length
@@ -60,13 +61,12 @@ class LinearComplexityTest(Test):
         # Compute the linear complexity of the blocks
         blocks_linear_complexity: numpy.ndarray = numpy.zeros(blocks_number, dtype=int)
         for i in range(blocks_number):
-            blocks_linear_complexity[i] = self._berlekamp_massey(bits[(i * self._pattern_length):((i + 1) * self._pattern_length)])
+            blocks_linear_complexity[i] = self.berlekamp_massey_algorithm(bits[(i * self._pattern_length) : ((i + 1) * self._pattern_length)])
         # Count the distribution over tickets
-        tickets: numpy.ndarray = ((-1.0) ** self._pattern_length) * (blocks_linear_complexity[:] - self._mu) + (2.0 / 9.0)
+        tickets: numpy.ndarray =  ((-1) ** self._pattern_length) * (blocks_linear_complexity[:] - self._mu) + (2.0 / 9.0)
         # Compute frequencies depending on tickets
-        frequencies: numpy.ndarray = numpy.zeros(self._freedom_degrees + 1, dtype=int)
-        for ticket in tickets:
-            frequencies[min(self._freedom_degrees, int(max(-2.5, ticket) + 2.5))] += 1
+        # -1 * tickets to convert the bin edges
+        frequencies: numpy.ndarray = numpy.histogram(-1 * tickets, bins=[numpy.NINF, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, numpy.Inf])[0][::-1]
         # Compute Chi-square using pre-defined probabilities
         chi_square: float = float(numpy.sum(((frequencies[:] - (blocks_number * self._probabilities[:])) ** 2.0) / (blocks_number * self._probabilities[:])))
         # Compute the score (P-value)
@@ -88,39 +88,41 @@ class LinearComplexityTest(Test):
         return True
 
     @staticmethod
-    def _berlekamp_massey(sequence: numpy.ndarray) -> int:
-        """
-        Compute the linear complexity of a sequence of bits by the means of the Berlekamp Massey algorithm.
-        :param sequence: the sequence of bits to compute the linear complexity for
-        :return: the int value of the linear complexity
-        """
-        # Initialize b and c to all zeroes with first element one
-        b: numpy.ndarray = numpy.zeros(sequence.size, dtype=int)
-        c: numpy.ndarray = numpy.zeros(sequence.size, dtype=int)
-        b[0] = 1
-        c[0] = 1
-        # Initialize the generator length
-        generator_length: int = 0
-        # Initialize variables
-        m: int = -1
-        n: int = 0
-        while n < sequence.size:
-            # Compute discrepancy
-            discrepancy = sequence[n]
-            for j in range(1, generator_length + 1):
-                discrepancy: int = discrepancy ^ (c[j] & sequence[n - j])
-            # If discrepancy is not zero, adjust polynomial
-            if discrepancy != 0:
-                t = c[:]
-                for j in range(0, sequence.size - n + m):
-                    c[n - m + j] = c[n - m + j] ^ b[j]
-                if generator_length <= n / 2:
-                    generator_length = n + 1 - generator_length
-                    m = n
-                    b = t
-            n = n + 1
-        # Return the length of generator
-        return generator_length
+    def berlekamp_massey_algorithm(block_data):
+           """
+           An implementation of the Berlekamp Massey Algorithm. Taken from Wikipedia [1]
+           [1] - https://en.wikipedia.org/wiki/Berlekamp-Massey_algorithm
+           The Berlekamp-Massey algorithm is an algorithm that will find the shortest linear feedback shift register (LFSR)
+           for a given binary output sequence. The algorithm will also find the minimal polynomial of a linearly recurrent
+           sequence in an arbitrary field. The field requirement means that the Berlekamp-Massey algorithm requires all
+           non-zero elements to have a multiplicative inverse.
+           :param block_data:
+           :return:
+           """
+           n = len(block_data)
+           c = numpy.zeros(n)
+           b = numpy.zeros(n)
+           c[0], b[0] = 1, 1
+           l, m, i = 0, -1, 0
+           int_data = [int(el) for el in block_data]
+           while i < n:
+               v = int_data[(i - l):i]
+               v = v[::-1]
+               cc = c[1:l + 1]
+               d = (int_data[i] + numpy.dot(v, cc)) % 2
+               if d == 1:
+                   temp = numpy.copy(c)
+                   p = numpy.zeros(n)
+                   for j in range(0, l):
+                       if b[j] == 1:
+                           p[j + i - m] = 1
+                   c = (c + p) % 2
+                   if l <= 0.5 * i:
+                       l = i + 1 - l
+                       m = i
+                       b = temp
+               i += 1
+           return l
 
 
     def __repr__(self) -> str:

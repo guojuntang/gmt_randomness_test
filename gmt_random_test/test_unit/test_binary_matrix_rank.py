@@ -150,15 +150,19 @@ class BinaryMatrixRankTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self):
+    def __init__(self, rows_number: int = 32, cols_number: int = 32):
         # Define specific test attributes
-        self._rows_number: int = 32
-        self._cols_number: int = 32
+        self._rows_number: int = rows_number
+        self._cols_number: int = cols_number
         self._block_size_min: int = 38
         # Compute the reference probabilities for full rank, full rank minus one and remained matrix rank (which is 1.0 minus the sum of the other probabilities)
-        self._full_rank_probability: float = self._product(self._rows_number, self._cols_number) * (2.0 ** ((self._rows_number * (self._cols_number + self._rows_number - self._rows_number)) - (self._rows_number * self._cols_number)))
-        self._minus_rank_probability: float = self._product(self._rows_number - 1, self._cols_number) * (2.0 ** ((self._rows_number * (self._cols_number + self._rows_number - self._rows_number)) - (self._rows_number * self._cols_number)))
+        # In GM/T document, those probabilities are rounded to 4 decimal places
+        self._full_rank_probability: float = round(self._product(self._rows_number, self._cols_number) * (2.0 ** ((self._rows_number * (self._cols_number + self._rows_number - self._rows_number)) - (self._rows_number * self._cols_number))), 4)
+        self._minus_rank_probability: float = round(self._product(self._rows_number - 1, self._cols_number) * (2.0 ** ((self._rows_number * (self._cols_number + self._rows_number - self._rows_number)) - (self._rows_number * self._cols_number))), 4)
         self._remained_rank_probability: float = 1.0 - (self._full_rank_probability + self._minus_rank_probability)
+        # self._full_rank_probability: float = 0.2888
+        # self._minus_rank_probability: float = 0.5776
+        #self._remained_rank_probability: float = 1.0 - (self._full_rank_probability + self._minus_rank_probability)
         # Define cache attributes
         self._last_bits_size: int = -1
         self._blocks_number: int = -1

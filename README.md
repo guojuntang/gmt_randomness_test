@@ -39,6 +39,8 @@ https://github.com/dj-on-github/sp800_22_tests
 
 https://github.com/InsaneMonster/NistRng
 
+https://github.com/stevenang/randomness_testsuite
+
 ## 2. Usage
 
 ### Execution Environment

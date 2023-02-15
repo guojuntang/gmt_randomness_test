@@ -122,33 +122,31 @@ if __name__ == "__main__":
         result, time = fourier_test.run(pack_01str(fourier_seq))
         print(result)
 
-        #e: str = ""
-        #with open("data/data.e", "rt") as f:
-        #        e = f.read()
-        #        f.close()
+        e: str = ""
+        with open("data/data.e", "rt") as f:
+                e = f.read()
+                f.close()
         
         #'''
         #Maurer's universal test
         #'''
-        ##universal_test: MaurersUniversalTest = MaurersUniversalTest()
-        ##result, time = universal_test.run(pack_01str(e))
-        #universal_test: MaurersUniversalTest = MaurersUniversalTest(2, 4)
-        #result, time = universal_test.run(pack_01str("01011010011101010111"))
-        #print(result)
+        universal_test: MaurersUniversalTest = MaurersUniversalTest()
+        result, time = universal_test.run(pack_01str(e))
+        print(result)
 
-        #'''
-        #Linear Complexity test
-        #'''
-        ##complexity_test: LinearComplexityTest = LinearComplexityTest()
-        ##result, time = complexity_test.run(pack_01str(e))
-        ##print(result)
+        '''
+        Linear Complexity test
+        '''
+        complexity_test: LinearComplexityTest = LinearComplexityTest(1000)
+        result, time = complexity_test.run(pack_01str(e))
+        print(result)
 
-        #'''
-        #Binary matrix rank test
-        #'''
-        #matrix_test: BinaryMatrixRankTest = BinaryMatrixRankTest()
-        #result, time = matrix_test.run(pack_01str(e))
-        #print(result)
+        '''
+        Binary matrix rank test
+        '''
+        matrix_test: BinaryMatrixRankTest = BinaryMatrixRankTest()
+        result, time = matrix_test.run(pack_01str(e))
+        print(result)
 
         '''
         q values test

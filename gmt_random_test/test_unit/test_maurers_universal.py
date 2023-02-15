@@ -1,10 +1,10 @@
 #
-# Copyright (C) 2019 Luca Pasqualini
-# University of Siena - Artificial Intelligence Laboratory - SAILab
+# Copyright (C) Guojun Tang 2022
 #
 # Inspired by the work of David Johnston (C) 2017: https://github.com/dj-on-github/sp800_22_tests
+#   and Luca Pasqualini (C) 2019: https://github.com/InsaneMonster/NistRng
 #
-# NistRng is licensed under a BSD 3-Clause.
+# This work is licensed under a BSD 3-Clause.
 #
 # You should have received a copy of the license along with this
 # work. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
@@ -76,7 +76,7 @@ class MaurersUniversalTest(Test):
         magnitude: float = (fn - self._expected_value_table[self._pattern_length]) / sigma
         # Compute the score (P-value)
         score: float = math.erfc(abs(magnitude) / math.sqrt(2))
-        q_value: float = math.erf(magnitude / math.sqrt(2)) / 2.0
+        q_value: float = math.erfc(magnitude / math.sqrt(2)) / 2.0
         # Return result
         if score >= self.significance_value:
             return Result(self.name, True, numpy.array([score]), numpy.array([q_value]))
