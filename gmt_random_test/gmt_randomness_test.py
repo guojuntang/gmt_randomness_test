@@ -23,6 +23,10 @@ class GmtRandomnessTest():
         self._intervals_num = intervals_num
         if bits_length == 20000:
             self._battery = GMT_20000
+        elif bits_length == 1000000:
+            self._battery = GMT_1000000
+        elif bits_length == 100000000:
+            self._battery == GMT_100000000
         else:
             raise RuntimeError("inapplicable bits length.")
 

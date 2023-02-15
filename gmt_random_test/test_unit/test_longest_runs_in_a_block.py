@@ -32,7 +32,7 @@ class LongestRunsInABlockTest(Test):
 
     def __init__(self, seq_length: int):
         # Define attributes
-        block_size: int = 1000
+        block_size: int = 10000
         if seq_length < 6272:
             block_size: int = 8
         elif seq_length < 750000:
