@@ -8,7 +8,7 @@
 
 对于每个待检测的二进制序列长度，国标文档中均有要求，并给出了对应的推荐参数。
 
-本项目暂时仅直持20000bits的检测，1000000和100000000的规模仍在调试当中。
+检测的长度规模：2 * 10^4, 2 * 10^6, 2 * 10^8
 
 ### 1.1 测试单项
 || 测试项| |
@@ -73,8 +73,11 @@ from gmt_random_test.gmt_randomness_test import GmtRandomnessTest
 from gmt_random_test.test import Result
 
 if __name__ == "__main__":
-    # 根据待测样本大小创建实例
+    # 根据待测样本长度创建实例
     gmt_test: GmtRandomnessTest = GmtRandomnessTest(20000)
+    # 选择不同的规模
+    # gmt_test: GmtRandomnessTest = GmtRandomnessTest(1000000)
+    # gmt_test: GmtRandomnessTest = GmtRandomnessTest(100000000)
 
     # 读取待测二进制串
     bits: numpy.ndarray = None

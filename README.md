@@ -8,7 +8,7 @@ We can use it to test a random number generator (RNG): if most random numbers ge
 
 This work includes 15 test units. We will compute the p_value for each sample in each test unit, if the given value is equal or greater than **0.01**, we may consider this sample passes the test unit. Total, the number of samples is **1000**, and there should be more than **981** samples passing the test if the RNG is reliable. In addition, we also compute the q_value for each test unit, in which the significant value should be **0.0001**.
 
-The GM/T document defines the recommended length for the sample bits and the corresponding parameters. However, currently we only support 20000-bit tests.
+The GM/T document defines the recommended length for the sample bits and the corresponding parameters. Available sizes: 2 * 10^4, 10^6 and 10^8.
 
 ### 1.1 Test units
 
@@ -80,6 +80,9 @@ from gmt_random_test.test import Result
 if __name__ == "__main__":
     # create the test instance with the sample size
     gmt_test: GmtRandomnessTest = GmtRandomnessTest(20000)
+    # also you can choose other sizes 
+    # gmt_test: GmtRandomnessTest = GmtRandomnessTest(1000000)
+    # gmt_test: GmtRandomnessTest = GmtRandomnessTest(100000000)
 
     # read binary sequences
     bits: numpy.ndarray = None

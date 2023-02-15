@@ -6,6 +6,9 @@ from gmt_random_test.test import Result
 if __name__ == "__main__":
     # create the test instance with the sample size
     gmt_test: GmtRandomnessTest = GmtRandomnessTest(20000)
+    # also you can choose other sizes 
+    # gmt_test: GmtRandomnessTest = GmtRandomnessTest(1000000)
+    # gmt_test: GmtRandomnessTest = GmtRandomnessTest(100000000)
 
     # read binary sequences
     bits: numpy.ndarray = None
