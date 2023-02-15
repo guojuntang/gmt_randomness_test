@@ -41,84 +41,84 @@ if __name__ == "__main__":
         '''
         Monobit test
         '''
-        monobit_test: MonobitTest = MonobitTest()
+        monobit_test: MonobitTest = MonobitTest(len(monobit_test_seq))
         result ,time = monobit_test.run(pack_01str(monobit_test_seq))
         print(result)
 
         '''
         Frequency within block test
         '''
-        frequency_test: FrequencyWithinBlockTest = FrequencyWithinBlockTest(10)
+        frequency_test: FrequencyWithinBlockTest = FrequencyWithinBlockTest(len(frequency_within_block_seq), 10)
         result, time = frequency_test.run(pack_01str(frequency_within_block_seq))
         print(result)
 
         '''
         Serial test
         '''
-        serial_test: SerialTest = SerialTest(2)
+        serial_test: SerialTest = SerialTest(len(serial_seq), 2)
         result, time = serial_test.run(pack_01str(serial_seq))
         print(result)
 
         '''
         Poker test
         '''
-        poker_test: PokerTest = PokerTest(4)
+        poker_test: PokerTest = PokerTest(len(poker_seq), 4)
         result, time = poker_test.run(pack_01str(poker_seq))
         print(result)
 
         '''
         Autocorrelation test
         '''
-        auto_test: AutocorrelationTest = AutocorrelationTest(1)
+        auto_test: AutocorrelationTest = AutocorrelationTest(len(auto_seq), 1)
         result, time = auto_test.run(pack_01str(auto_seq))
         print(result)
 
         '''
         Autocorrelation test
         '''
-        derivative_test: BinaryDerivativeTest = BinaryDerivativeTest(3)
+        derivative_test: BinaryDerivativeTest = BinaryDerivativeTest(len(derivative_seq), 3)
         result, time = derivative_test.run(pack_01str(derivative_seq))
         print(result)
 
         '''
         Runs test
         '''
-        runs_test: RunsTest = RunsTest()
+        runs_test: RunsTest = RunsTest(len(runs_seq))
         result, time = runs_test.run(pack_01str(runs_seq))
         print(result)
 
         '''
         Runs Distribution test
         '''
-        runs_dist_test: RunsDistributionTest = RunsDistributionTest(128)
+        runs_dist_test: RunsDistributionTest = RunsDistributionTest(len(runs_dist_seq), 128)
         result, time = runs_dist_test.run(pack_01str(runs_dist_seq))
         print(result)
 
         '''
         Longest runs in a block test
         '''
-        longest_runs_test: LongestRunsInABlockTest = LongestRunsInABlockTest()
+        longest_runs_test: LongestRunsInABlockTest = LongestRunsInABlockTest(len(longest_runs_seq))
         result, time = longest_runs_test.run(pack_01str(longest_runs_seq))
         print(result)
 
         '''
         cumulative sums test
         '''
-        sums_test: CumulativeSumsTest = CumulativeSumsTest()
+        sums_test: CumulativeSumsTest = CumulativeSumsTest(len(sums_seq))
         result, time = sums_test.run(pack_01str(sums_seq))
         print(result)
 
         '''
         approximate entropy test
         '''
-        entropy_test: ApproximateEntropyTest = ApproximateEntropyTest(2)
+        entropy_test: ApproximateEntropyTest = ApproximateEntropyTest(len(entropy_seq), 2)
         result, time = entropy_test.run(pack_01str(entropy_seq))
         print(result)
 
         '''
         discrete fourier transform test
         '''
-        fourier_test: DiscreteFourierTransformTest = DiscreteFourierTransformTest()
+        fourier_test: DiscreteFourierTransformTest = DiscreteFourierTransformTest(len(fourier_seq))
         result, time = fourier_test.run(pack_01str(fourier_seq))
         print(result)
 
@@ -130,21 +130,21 @@ if __name__ == "__main__":
         #'''
         #Maurer's universal test
         #'''
-        universal_test: MaurersUniversalTest = MaurersUniversalTest()
+        universal_test: MaurersUniversalTest = MaurersUniversalTest(len(e))
         result, time = universal_test.run(pack_01str(e))
         print(result)
 
         '''
         Linear Complexity test
         '''
-        complexity_test: LinearComplexityTest = LinearComplexityTest(1000)
+        complexity_test: LinearComplexityTest = LinearComplexityTest(len(e), 1000)
         result, time = complexity_test.run(pack_01str(e))
         print(result)
 
         '''
         Binary matrix rank test
         '''
-        matrix_test: BinaryMatrixRankTest = BinaryMatrixRankTest()
+        matrix_test: BinaryMatrixRankTest = BinaryMatrixRankTest(len(e))
         result, time = matrix_test.run(pack_01str(e))
         print(result)
 

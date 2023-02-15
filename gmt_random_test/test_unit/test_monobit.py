@@ -29,9 +29,9 @@ class MonobitTest(Test):
     should be about the same.
     The significance value of the test is 0.01.
     """
-    def __init__(self):
+    def __init__(self, seq_length: int):
         # Generate base Test class
-        super(MonobitTest, self).__init__("Monobit", 0.01)
+        super(MonobitTest, self).__init__("Monobit", 0.01, seq_length)
 
     def _execute(self,
                  bits: numpy.ndarray):
@@ -51,15 +51,6 @@ class MonobitTest(Test):
         if score >= self.significance_value:
             return Result(self.name, True, numpy.array([score]), numpy.array([q_value]))
         return Result(self.name, False, numpy.array([score]), numpy.array([q_value]))
-
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # This test is always eligible for any sequence
-        return True
-
 
     def __repr__(self) -> str:
         return f'{self.name}'

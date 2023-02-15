@@ -30,17 +30,24 @@ class LongestRunsInABlockTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self):
-        # TODO fix bits length here
-        # Define specific test attributes
-        self._sequence_size_min: int = 128
-        # Define cache attributes
-        self._last_bits_size: int = -1
-        self._block_size: int = -1
-        self._blocks_number: int = -1
-        self._k: int = -1
+    def __init__(self, seq_length: int):
+        # Define attributes
+        block_size: int = 1000
+        if seq_length < 6272:
+            block_size: int = 8
+        elif seq_length < 750000:
+            block_size: int = 128
+        # Set the block number and K depending on the block size
+        k: int = 6
+        if block_size == 8:
+            k: int = 3
+        elif block_size == 128:
+            k: int = 5
+        self._block_size: int = block_size
+        self._blocks_number: int = seq_length // block_size
+        self._k: int = k
         # Generate base Test class
-        super(LongestRunsInABlockTest, self).__init__("Longest Runs In A Block", 0.01)
+        super(LongestRunsInABlockTest, self).__init__("Longest Runs In A Block", 0.01, seq_length)
 
     def _cal_longest_runs(self, block: numpy.ndarray):
         prev_bit: int = block[0]
@@ -70,46 +77,20 @@ class LongestRunsInABlockTest(Test):
         """
         Overridden method of Test class: check its docstring for further information.
         """
-        # Reload values is cache is empty or no longer up-to-date
-        # Otherwise, use cache
-        if self._last_bits_size == -1 or self._last_bits_size != bits.size:
-            # Set the block size depending on the input sequence length
-            # todo: check block size over 1000
-            block_size: int = 1000
-            if bits.size < 6272:
-                block_size: int = 8
-            elif bits.size < 750000:
-                block_size: int = 128
-            # Set the block number and K depending on the block size
-            k: int = 6
-            if block_size == 8:
-                k: int = 3
-            elif block_size == 128:
-                k: int = 5
-            blocks_number = bits.size // block_size
-            # Save in the cache
-            self._last_bits_size = bits.size
-            self._block_size = block_size
-            self._blocks_number = blocks_number
-            self._k = k
-        else:
-            block_size: int = self._block_size
-            blocks_number: int = self._blocks_number
-            k: int = self._k
         # Define the array of frequencies
         ones_frequencies: numpy.ndarray = numpy.zeros(7, dtype=int)
         zeroes_frequencies: numpy.ndarray = numpy.zeros(7, dtype=int)
         # Find longest run length in each block
-        for i in range(blocks_number):
-            block: numpy.ndarray = bits[i * block_size:((i + 1) * block_size)]
+        for i in range(self._blocks_number):
+            block: numpy.ndarray = bits[i * self._block_size:((i + 1) * self._block_size)]
             run_length: int = 0
             # Count the length of each adjacent bits group (runs) in the current block and update the max length of them
             longest_ones_run_length, longest_zeroes_run_length  = self._cal_longest_runs(block)
             # Update the list of frequencies
-            if block_size == 8:
+            if self._block_size == 8:
                 ones_frequencies[min(3, max(0, longest_ones_run_length - 1))] += 1
                 zeroes_frequencies[min(3, max(0, longest_zeroes_run_length - 1))] += 1
-            elif block_size == 128:
+            elif self._block_size == 128:
                 ones_frequencies[min(5, max(0, longest_ones_run_length - 4))] += 1
                 zeroes_frequencies[min(5, max(0, longest_zeroes_run_length - 4))] += 1
             else:
@@ -118,12 +99,12 @@ class LongestRunsInABlockTest(Test):
         # Compute Chi-square
         zeroes_chi_square: float = 0.0
         ones_chi_square: float = 0.0
-        for i in range(k + 1):
-            zeroes_chi_square += ((zeroes_frequencies[i] - blocks_number * self._probabilities(block_size, i)) ** 2) / (blocks_number * self._probabilities(block_size, i))
-            ones_chi_square += ((ones_frequencies[i] - blocks_number * self._probabilities(block_size, i)) ** 2) / (blocks_number * self._probabilities(block_size, i))
+        for i in range(self._k + 1):
+            zeroes_chi_square += ((zeroes_frequencies[i] - self._blocks_number * self._probabilities(self._block_size, i)) ** 2) / (self._blocks_number * self._probabilities(self._block_size, i))
+            ones_chi_square += ((ones_frequencies[i] - self._blocks_number * self._probabilities(self._block_size, i)) ** 2) / (self._blocks_number * self._probabilities(self._block_size, i))
         # Compute score (P-value)
-        score_1: float = scipy.special.gammaincc(k / 2.0, zeroes_chi_square / 2.0)
-        score_2: float = scipy.special.gammaincc(k / 2.0, ones_chi_square / 2.0)
+        score_1: float = scipy.special.gammaincc(self._k / 2.0, zeroes_chi_square / 2.0)
+        score_2: float = scipy.special.gammaincc(self._k / 2.0, ones_chi_square / 2.0)
         # Compute q-value
         q_value_1: float = score_1
         q_value_2: float = score_2
@@ -132,15 +113,6 @@ class LongestRunsInABlockTest(Test):
             return Result(self.name, True, numpy.array([score_1, score_2]), numpy.array([q_value_1, q_value_2]))
         return Result(self.name, False, numpy.array([score_1, score_2]), numpy.array([q_value_1, q_value_2]))
 
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # Check for eligibility
-        if bits.size < self._sequence_size_min:
-            return False
-        return True
 
     def __repr__(self) -> str:
         return f'{self.name}'

@@ -32,12 +32,11 @@ class SerialTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self, pattern_length: int = 4):
+    def __init__(self, seq_length: int, pattern_length: int = 4):
         # Define specific test attributes
-        self._blocks_length_min: int = 4
         self._pattern_length: int = pattern_length
         # Generate base Test class
-        super(SerialTest, self).__init__("Serial", 0.01)
+        super(SerialTest, self).__init__("Serial", 0.01, seq_length)
 
     def _execute(self,
                  bits: numpy.ndarray) -> Result:
@@ -63,15 +62,15 @@ class SerialTest(Test):
             return Result(self.name, True, numpy.array([score_1, score_2]), numpy.array([q_value_1, q_value_2]))
         return Result(self.name, False, numpy.array([score_1, score_2]), numpy.array([q_value_1, q_value_2]))
 
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # Check for eligibility
-        if int(math.floor(math.log(bits.size, 2))) - 2 < self._blocks_length_min:
-            return False
-        return True
+    # def is_eligible(self,
+    #                 bits: numpy.ndarray) -> bool:
+    #     """
+    #     Overridden method of Test class: check its docstring for further information.
+    #     """
+    #     # Check for eligibility
+    #     if int(math.floor(math.log(bits.size, 2))) - 2 < self._blocks_length_min:
+    #         return False
+    #     return True
 
     @staticmethod
     def _count_pattern(pattern: numpy.ndarray, padded_sequence: numpy.ndarray, sequence_size: int) -> int:

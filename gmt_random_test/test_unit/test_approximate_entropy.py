@@ -29,36 +29,22 @@ class ApproximateEntropyTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self, init_block_length = 2):
+    def __init__(self, seq_length: int, block_length = 2):
         # Define specific test attributes
-        self._blocks_length_min: int = 2
         self._pattern_length: int = 2
-        self._init_block_length:int = init_block_length
-        # Define cache attributes
-        self._last_bits_size: int = -1
-        self._blocks_length: int = -1
+        # Define attributes
+        self._blocks_length: int = block_length
         # Generate base Test class
-        super(ApproximateEntropyTest, self).__init__("Approximate Entropy", 0.01)
+        super(ApproximateEntropyTest, self).__init__("Approximate Entropy", 0.01, seq_length)
 
     def _execute(self,
                  bits: numpy.ndarray) -> Result:
         """
         Overridden method of Test class: check its docstring for further information.
         """
-        # Reload values is cache is empty or no longer up-to-date
-        # Otherwise, use cache
-        if self._last_bits_size == -1 or self._last_bits_size != bits.size:
-            # Define the block length in a range bounded by 2 and 3
-            #blocks_length: int = min(2, max(3, int(math.floor(math.log(bits.size, 2))) - 6))
-            blocks_length: int = self._init_block_length
-            # Save in the cache
-            self._last_bits_size = bits.size
-            self._blocks_length = blocks_length
-        else:
-            blocks_length: int = self._blocks_length
         # Define Phi-m statistics list
         phi_m = []
-        for iteration in range(blocks_length, blocks_length + 2):
+        for iteration in range(self._blocks_length, self._blocks_length + 2):
             # Compute the padded sequence of bits
             padded_bits: numpy.ndarray = numpy.concatenate((bits, bits[0:iteration - 1]))
             # Compute the frequency count
@@ -76,23 +62,16 @@ class ApproximateEntropyTest(Test):
         # Compute Chi-Square from the computed statistics
         chi_square: float = 2 * bits.size * (math.log(2) - (phi_m[0] - phi_m[1]))
         # Compute the score (P-value)
-        score: float = scipy.special.gammaincc(2 ** (blocks_length - 1), (chi_square / 2.0))
+        score: float = scipy.special.gammaincc(2 ** (self._blocks_length - 1), (chi_square / 2.0))
         q_value: float = score
         # Return result
         if score >= self.significance_value:
             return Result(self.name, True, numpy.array([score]), numpy.array([q_value]))
         return Result(self.name, False, numpy.array([score]), numpy.array([q_value]))
 
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # This test is always eligible for any sequence
-        return True
 
     def __repr__(self) -> str:
-        return f'{self.name} (m={self._init_block_length})'
+        return f'{self.name} (m={self._blocks_length})'
 
     @staticmethod
     def _pattern_to_int(bit_pattern: numpy.ndarray) -> int:

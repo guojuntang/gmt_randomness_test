@@ -33,26 +33,23 @@ class DiscreteFourierTransformTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self):
+    def __init__(self, seq_length: int):
         # Generate base Test class
-        super(DiscreteFourierTransformTest, self).__init__("Discrete Fourier Transform", 0.01)
+        super(DiscreteFourierTransformTest, self).__init__("Discrete Fourier Transform", 0.01, seq_length)
 
     def _execute(self,
                  bits: numpy.ndarray) -> Result:
         """
         Overridden method of Test class: check its docstring for further information.
         """
-        bits_copy: numpy.ndarray = numpy.zeros(bits.size,dtype=int)
+        bits_copy: numpy.ndarray = numpy.zeros(bits.size, dtype=int)
         # Convert all the zeros in the array to -1
         for i in range(bits_copy.size):
             bits_copy[i] = -1 if bits[i] == 0 else 1
         # Compute DFT
         discrete_fourier_transform = numpy.fft.fft(bits_copy)
-        # Compute magnitudes of first half of sequence depending on the system type
-        if sys.version_info > (3, 0):
-            magnitudes = numpy.abs(discrete_fourier_transform)[:bits_copy.size // 2]
-        else:
-            magnitudes = abs(discrete_fourier_transform)[:bits_copy.size / 2]
+        # Compute magnitudes of first half of sequence
+        magnitudes = numpy.abs(discrete_fourier_transform)[:bits_copy.size // 2]
         # Compute upper threshold
         # threshold: float = math.sqrt(math.log(1.0 / 0.05) * bits_copy.size)
         threshold: float = math.sqrt(2.995732274 * bits_copy.size)
@@ -72,11 +69,4 @@ class DiscreteFourierTransformTest(Test):
     def __repr__(self) -> str:
         return f'{self.name}'
 
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # This test is always eligible for any sequence
-        return True
 

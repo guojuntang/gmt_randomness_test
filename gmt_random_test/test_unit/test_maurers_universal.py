@@ -28,10 +28,9 @@ class MaurersUniversalTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self, pattern_length: int = 7, q_blocks: int = 1280):
+    def __init__(self, seq_length: int, pattern_length: int = 7, q_blocks: int = 1280):
         # Define specific test attributes
         # Note: tables from https://static.aminer.org/pdf/PDF/000/120/333/a_universal_statistical_test_for_random_bit_generators.pdf
-        self._sequence_size_min: int = 387840
         self._thresholds = [904960, 2068480, 4654080, 10342400, 22753280, 49643520, 107560960, 231669760, 496435200, 1059061760]
         self._expected_value_table  = [0, 0.73264948, 1.5374383, 2.40160681, 3.31122472, 4.25342659, 5.2177052, 6.1962507, 7.1836656, 8.1764248, 9.1723243, 10.170032, 11.168765, 12.168070, 13.167693, 14.167488, 15.167379]
         self._variance_table = [0, 0.690, 1.338, 1.901, 2.358, 2.705, 2.954, 3.125, 3.238, 3.311, 3.356, 3.384, 3.401, 3.410, 3.416, 3.419, 3.421]
@@ -39,7 +38,7 @@ class MaurersUniversalTest(Test):
         self._pattern_length: int = pattern_length
         self._q_blocks: int = q_blocks
         # Generate base Test class
-        super(MaurersUniversalTest, self).__init__("Maurers Universal", 0.01)
+        super(MaurersUniversalTest, self).__init__("Maurers Universal", 0.01, seq_length)
 
     def _execute(self,
                  bits: numpy.ndarray) -> Result:
@@ -81,16 +80,6 @@ class MaurersUniversalTest(Test):
         if score >= self.significance_value:
             return Result(self.name, True, numpy.array([score]), numpy.array([q_value]))
         return Result(self.name, False, numpy.array([score]), numpy.array([q_value]))
-
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # Check for eligibility
-        if bits.size < self._sequence_size_min:
-            return False
-        return True
 
     @staticmethod
     def _pattern_to_int(bit_pattern: numpy.ndarray) -> int:

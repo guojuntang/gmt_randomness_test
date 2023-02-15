@@ -29,12 +29,11 @@ class RunsDistributionTest(Test):
     """
 
     # require bits length to pre-compute the table
-    def __init__(self, bits_length: int = 100):
+    def __init__(self, seq_length: int, bits_length: int = 100):
         self._bits_length = bits_length
-        self._min_bits_length: int = 100
         self._table: numpy.ndarray = None
         self._k: int = -1
-        super(RunsDistributionTest, self).__init__("RunsDistribution", 0.01)
+        super(RunsDistributionTest, self).__init__("RunsDistribution", 0.01, seq_length)
 
     def _compute_table(self):
         self._table = numpy.zeros(self._bits_length, dtype=float) 
@@ -102,11 +101,3 @@ class RunsDistributionTest(Test):
 
     def __repr__(self) -> str:
         return f'{self.name}'
-
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # This test is always eligible for any sequence
-        return True

@@ -30,9 +30,9 @@ class RunsTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self):
+    def __init__(self, seq_length: int):
         # Generate base Test class
-        super(RunsTest, self).__init__("Runs", 0.01)
+        super(RunsTest, self).__init__("Runs", 0.01, seq_length)
 
     def _execute(self,
                  bits: numpy.ndarray) -> Result:
@@ -58,14 +58,16 @@ class RunsTest(Test):
     def __repr__(self) -> str:
         return f'{self.name}'
 
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # Check for eligibility
-        proportion: float = numpy.count_nonzero(bits) / bits.size
-        tau: float = 2.0 / math.sqrt(bits.size)
-        if abs(proportion - 0.5) > tau:
-            return False
-        return True
+    # def is_eligible(self,
+    #                 bits: numpy.ndarray) -> bool:
+    #     """
+    #     Overridden method of Test class: check its docstring for further information.
+    #     """
+    #     # Check for eligibility
+    #     if(not self._length_check):
+    #         return False
+    #     proportion: float = numpy.count_nonzero(bits) / bits.size
+    #     tau: float = 2.0 / math.sqrt(bits.size)
+    #     if abs(proportion - 0.5) > tau:
+    #         return False
+    #     return True

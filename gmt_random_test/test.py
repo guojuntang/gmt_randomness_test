@@ -69,8 +69,10 @@ class Test:
 
     def __init__(self,
                  name: str,
-                 significance_value: float):
+                 significance_value: float,
+                 seq_length: int):
         self.name: str = name
+        self.seq_length: int = seq_length, 
         self.significance_value: float = significance_value
 
     def _execute(self,
@@ -91,9 +93,15 @@ class Test:
         :return: a Result object stating the outcome of the test and the elapsed time in milliseconds
         """
         start_time: int = int(round(time.time() * 1000))
+        if(not self.is_eligible(bits)):
+            raise Exception("Tested sequence is not eligible.")
         result: Result = self._execute(bits)
         end_time: int = int(round(time.time() * 1000))
         return result, end_time - start_time
+    
+    def _length_check(self,
+                      bits: numpy.ndarray) -> bool:
+        return bits.size == self.seq_length
 
     def is_eligible(self,
                     bits: numpy.ndarray) -> bool:
@@ -102,5 +110,5 @@ class Test:
         :param bits: the sequence of bits for which to check test eligibility, wrapped in a numpy array (ndarray)
         :return: a boolean flag stating the eligibility or not of the test
         """
-        # Abstract method, definition should be implemented on a child class basis
-        raise NotImplementedError()
+        # Default case
+        return self._length_check

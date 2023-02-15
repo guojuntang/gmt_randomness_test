@@ -150,11 +150,10 @@ class BinaryMatrixRankTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self, rows_number: int = 32, cols_number: int = 32):
+    def __init__(self, seq_length: int, rows_number: int = 32, cols_number: int = 32):
         # Define specific test attributes
         self._rows_number: int = rows_number
         self._cols_number: int = cols_number
-        self._block_size_min: int = 38
         # Compute the reference probabilities for full rank, full rank minus one and remained matrix rank (which is 1.0 minus the sum of the other probabilities)
         # In GM/T document, those probabilities are rounded to 4 decimal places
         self._full_rank_probability: float = round(self._product(self._rows_number, self._cols_number) * (2.0 ** ((self._rows_number * (self._cols_number + self._rows_number - self._rows_number)) - (self._rows_number * self._cols_number))), 4)
@@ -163,32 +162,21 @@ class BinaryMatrixRankTest(Test):
         # self._full_rank_probability: float = 0.2888
         # self._minus_rank_probability: float = 0.5776
         #self._remained_rank_probability: float = 1.0 - (self._full_rank_probability + self._minus_rank_probability)
-        # Define cache attributes
-        self._last_bits_size: int = -1
-        self._blocks_number: int = -1
+        # Define attributes
+        self._blocks_number: int = int(math.floor(seq_length / (self._rows_number * self._cols_number)))
         # Generate base Test class
-        super(BinaryMatrixRankTest, self).__init__("Binary Matrix Rank", 0.01)
+        super(BinaryMatrixRankTest, self).__init__("Binary Matrix Rank", 0.01, seq_length)
 
     def _execute(self,
                  bits: numpy.ndarray) -> Result:
         """
         Overridden method of Test class: check its docstring for further information.
         """
-        # Reload values is cache is empty or no longer up-to-date
-        # Otherwise, use cache
-        if self._last_bits_size == -1 or self._last_bits_size != bits.size:
-            # Compute the number of blocks
-            blocks_number: int = int(math.floor(bits.size / (self._rows_number * self._cols_number)))
-            # Save in the cache
-            self._last_bits_size = bits.size
-            self._blocks_number = blocks_number
-        else:
-            blocks_number: int = self._blocks_number
         # Compute the number of full rank, minus rank and remained rank matrices
         full_rank_matrices: int = 0
         minus_rank_matrices: int = 0
         remainder: int = 0
-        for i in range(blocks_number):
+        for i in range(self._blocks_number):
             # Get the bits in the block and reshape them in a 2D array (the matrix)
             block: numpy.ndarray = bits[i * (self._rows_number * self._cols_number):(i + 1) * (self._rows_number * self._cols_number)].reshape((self._rows_number, self._cols_number))
             # Compute rank of the block matrix
@@ -202,7 +190,7 @@ class BinaryMatrixRankTest(Test):
             else:
                 remainder += 1
         # Compute Chi-square
-        chi_square: float = (((full_rank_matrices - (self._full_rank_probability * blocks_number)) ** 2) / (self._full_rank_probability * blocks_number)) + (((minus_rank_matrices - (self._minus_rank_probability * blocks_number)) ** 2) / (self._minus_rank_probability * blocks_number)) + (((remainder - (self._remained_rank_probability * blocks_number)) ** 2) / (self._remained_rank_probability * blocks_number))
+        chi_square: float = (((full_rank_matrices - (self._full_rank_probability * self._blocks_number)) ** 2) / (self._full_rank_probability * self._blocks_number)) + (((minus_rank_matrices - (self._minus_rank_probability * self._blocks_number)) ** 2) / (self._minus_rank_probability * self._blocks_number)) + (((remainder - (self._remained_rank_probability * self._blocks_number)) ** 2) / (self._remained_rank_probability * self._blocks_number))
         # Compute the score (P-value)
         score: float = math.e ** (-chi_square / 2.0)
         q_value: float = score
@@ -211,16 +199,16 @@ class BinaryMatrixRankTest(Test):
             return Result(self.name, True, numpy.array([score]), numpy.array([q_value]))
         return Result(self.name, False, numpy.array([score]), numpy.array([q_value]))
 
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # Check for eligibility
-        blocks_number: int = int(math.floor(bits.size / (self._rows_number * self._cols_number)))
-        if blocks_number < self._block_size_min:
-            return False
-        return True
+    # def is_eligible(self,
+    #                 bits: numpy.ndarray) -> bool:
+    #     """
+    #     Overridden method of Test class: check its docstring for further information.
+    #     """
+    #     # Check for eligibility
+    #     blocks_number: int = int(math.floor(bits.size / (self._rows_number * self._cols_number)))
+    #     if blocks_number < self._block_size_min:
+    #         return False
+    #     return True
 
     def __repr__(self) -> str:
         return f'{self.name}'

@@ -29,38 +29,26 @@ class LinearComplexityTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self, pattern_length = 1000):
+    def __init__(self, seq_length: int, pattern_length = 1000):
         # Define specific test attributes
-        self._sequence_size_min: int = 1000000
         self._pattern_length: int = pattern_length
         self._freedom_degrees: int = 6
         self._probabilities: numpy.ndarray = numpy.array([0.010417, 0.03125, 0.125, 0.5, 0.25, 0.0625, 0.020833])
         # Compute mean
         self._mu: float = (self._pattern_length / 2.0) + (((-1) ** (self._pattern_length + 1)) + 9.0) / 36.0 - ((self._pattern_length / 3.0) + (2.0 / 9.0)) / (2 ** self._pattern_length)
-        # Define cache attributes
-        self._last_bits_size: int = -1
-        self._blocks_number: int = -1
+        # Define attributes
+        self._blocks_number: int = seq_length // pattern_length
         # Generate base Test class
-        super(LinearComplexityTest, self).__init__("Linear Complexity", 0.01)
+        super(LinearComplexityTest, self).__init__("Linear Complexity", 0.01, seq_length)
 
     def _execute(self,
                  bits: numpy.ndarray) -> Result:
         """
         Overridden method of Test class: check its docstring for further information.
         """
-        # Reload values is cache is empty or no longer up-to-date
-        # Otherwise, use cache
-        if self._last_bits_size == -1 or self._last_bits_size != bits.size:
-            # Set the block size
-            blocks_number: int = int(bits.size // self._pattern_length)
-            # Save in the cache
-            self._last_bits_size = bits.size
-            self._blocks_number = blocks_number
-        else:
-            blocks_number: int = self._blocks_number
         # Compute the linear complexity of the blocks
-        blocks_linear_complexity: numpy.ndarray = numpy.zeros(blocks_number, dtype=int)
-        for i in range(blocks_number):
+        blocks_linear_complexity: numpy.ndarray = numpy.zeros(self._blocks_number, dtype=int)
+        for i in range(self._blocks_number):
             blocks_linear_complexity[i] = self.berlekamp_massey_algorithm(bits[(i * self._pattern_length) : ((i + 1) * self._pattern_length)])
         # Count the distribution over tickets
         tickets: numpy.ndarray =  ((-1) ** self._pattern_length) * (blocks_linear_complexity[:] - self._mu) + (2.0 / 9.0)
@@ -68,7 +56,7 @@ class LinearComplexityTest(Test):
         # -1 * tickets to convert the bin edges
         frequencies: numpy.ndarray = numpy.histogram(-1 * tickets, bins=[numpy.NINF, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, numpy.Inf])[0][::-1]
         # Compute Chi-square using pre-defined probabilities
-        chi_square: float = float(numpy.sum(((frequencies[:] - (blocks_number * self._probabilities[:])) ** 2.0) / (blocks_number * self._probabilities[:])))
+        chi_square: float = float(numpy.sum(((frequencies[:] - (self._blocks_number * self._probabilities[:])) ** 2.0) / (self._blocks_number * self._probabilities[:])))
         # Compute the score (P-value)
         score: float = scipy.special.gammaincc((self._freedom_degrees / 2.0), (chi_square / 2.0))
         q_value: float = score
@@ -77,15 +65,6 @@ class LinearComplexityTest(Test):
             return Result(self.name, True, numpy.array([score]), numpy.array([q_value]))
         return Result(self.name, False, numpy.array([score]), numpy.array([q_value]))
 
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # Check for eligibility
-        if bits.size < self._sequence_size_min:
-            return False
-        return True
 
     @staticmethod
     def berlekamp_massey_algorithm(block_data):

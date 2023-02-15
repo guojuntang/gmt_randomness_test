@@ -31,9 +31,9 @@ class CumulativeSumsTest(Test):
     The significance value of the test is 0.01.
     """
 
-    def __init__(self):
+    def __init__(self, seq_length: int):
         # Generate base Test class
-        super(CumulativeSumsTest, self).__init__("Cumulative Sums", 0.01)
+        super(CumulativeSumsTest, self).__init__("Cumulative Sums", 0.01, seq_length)
 
     def _execute(self,
                  bits: numpy.ndarray) -> Result:
@@ -63,14 +63,6 @@ class CumulativeSumsTest(Test):
         if score_1 >= self.significance_value and score_2 >= self.significance_value:
             return Result(self.name, True, numpy.array([score_1, score_2]), numpy.array([q_value_1, q_value_2]))
         return Result(self.name, False, numpy.array([score_1, score_2]), numpy.array([q_value_1, q_value_2]))
-
-    def is_eligible(self,
-                    bits: numpy.ndarray) -> bool:
-        """
-        Overridden method of Test class: check its docstring for further information.
-        """
-        # This test is always eligible for any sequence
-        return True
 
     def __repr__(self) -> str:
         return f'{self.name}'
