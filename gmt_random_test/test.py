@@ -72,7 +72,7 @@ class Test:
                  significance_value: float,
                  seq_length: int):
         self.name: str = name
-        self.seq_length: int = seq_length, 
+        self.seq_length: int = seq_length 
         self.significance_value: float = significance_value
 
     def _execute(self,
@@ -111,4 +111,4 @@ class Test:
         :return: a boolean flag stating the eligibility or not of the test
         """
         # Default case
-        return self._length_check
+        return self._length_check(bits)
