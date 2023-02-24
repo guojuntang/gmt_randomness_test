@@ -94,11 +94,11 @@ class GmtRandomnessTest():
                     q_value_list.append(result.q_value[0])
 
             if q_value_list1 != []:
-                q_value_score1: float = QValueCollector.compute_value(numpy.array(q_value_list1), self._intervals_num, samples_size)
-                q_value_score: float = QValueCollector.compute_value(numpy.array(q_value_list), self._intervals_num, samples_size)
+                q_value_score1: float = QValueCollector.compute_value(numpy.array(q_value_list1), self._intervals_num)
+                q_value_score: float = QValueCollector.compute_value(numpy.array(q_value_list), self._intervals_num)
                 print(f'{test_unit} \t\t\t{passes} \t{q_value_score}, {q_value_score1}')
             else:
-                q_value_score: float = QValueCollector.compute_value(numpy.array(q_value_list), self._intervals_num, samples_size)
+                q_value_score: float = QValueCollector.compute_value(numpy.array(q_value_list), self._intervals_num)
                 print(f'{test_unit} \t\t\t{passes} \t{q_value_score}')
 
 
